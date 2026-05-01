@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Always run from project root regardless of where the script is called from
+cd "$(dirname "$0")/.."
+
 DEPLOY_DIR=/var/www/client
 
 echo "==> Installing dependencies..."
