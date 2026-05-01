@@ -4,7 +4,7 @@ set -e
 DEPLOY_DIR=/var/www/client
 
 echo "==> Installing dependencies..."
-npm ci --omit=dev
+npm ci
 
 echo "==> Building..."
 npm run build
