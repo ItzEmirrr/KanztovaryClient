@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { Product } from '../../types'
 import { getImageUrl, formatPrice, calcDiscountPercent } from '../../lib/utils'
 import { useCart } from '../../hooks/useCart'
-import { useAuthStore } from '../../store/authStore'
 
 interface Props {
   product: Product
@@ -15,7 +14,6 @@ export function ProductCard({ product }: Props) {
   const [hovered, setHovered] = useState(false)
   const [added, setAdded] = useState(false)
   const { addItem } = useCart()
-  const { token } = useAuthStore()
   const navigate = useNavigate()
 
   const mainImage = product.images.find((i) => i.isMain) ?? product.images[0]
@@ -26,10 +24,19 @@ export function ProductCard({ product }: Props) {
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault()
-    if (!token) { navigate('/login'); return }
     if (hasVariants) { navigate(`/catalog/${product.id}`); return }
     addItem.mutate(
-      { productId: product.id, quantity: 1 },
+      {
+        productId: product.id,
+        variantId: null,
+        quantity: 1,
+        productName: product.name,
+        productSku: product.sku,
+        productMainImage: mainImage?.imageUrl ?? null,
+        variantSku: null,
+        variantAttributes: null,
+        unitPrice: product.discountPrice ?? product.price,
+      },
       {
         onSuccess: () => {
           setAdded(true)

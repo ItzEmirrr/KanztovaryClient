@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useAuthStore } from '../store/authStore'
 
 export function CheckoutSuccess() {
   const [params] = useSearchParams()
   const orderId = params.get('orderId')
+  const { token } = useAuthStore()
 
   useEffect(() => {
     document.title = 'Заказ оформлен — Stationery'
@@ -50,12 +52,14 @@ export function CheckoutSuccess() {
           Мы свяжемся с вами по указанному номеру телефона для подтверждения заказа
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            to="/orders"
-            className="bg-[#1e3a5f] text-white px-8 py-3 rounded-full font-medium hover:bg-[#2d5282] transition-colors"
-          >
-            Мои заказы
-          </Link>
+          {token && (
+            <Link
+              to="/orders"
+              className="bg-[#1e3a5f] text-white px-8 py-3 rounded-full font-medium hover:bg-[#2d5282] transition-colors"
+            >
+              Мои заказы
+            </Link>
+          )}
           <Link
             to="/catalog"
             className="border border-[#1e3a5f] text-[#1e3a5f] px-8 py-3 rounded-full font-medium hover:bg-[#1e3a5f] hover:text-white transition-colors"

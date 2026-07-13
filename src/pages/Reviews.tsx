@@ -29,10 +29,12 @@ export function Reviews() {
 
   // ── My review (auth only, 404 is normal) ────────────────────────────────────
   const { data: myReview } = useQuery<Review | null>({
-    queryKey: ['myReview'],
+    queryKey: ['myReview', token],
     queryFn: () =>
       reviewsApi.getMyReview().catch((err) => {
-        if (err?.response?.status === 404) return null
+        const status = err?.response?.status
+        const code = err?.response?.data?.code
+        if (status === 404 || code === 615) return null
         throw err
       }),
     enabled: !!token,

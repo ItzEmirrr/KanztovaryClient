@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useProduct, useProducts } from '../hooks/useProducts'
 import { useCart } from '../hooks/useCart'
-import { useAuthStore } from '../store/authStore'
 import { Gallery } from '../components/product/Gallery'
 import { VariantSelector } from '../components/product/VariantSelector'
 import { ProductCard } from '../components/shared/ProductCard'
@@ -16,8 +15,6 @@ import toast from 'react-hot-toast'
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>()
   const { data: product, isLoading } = useProduct(Number(id))
-  const { token } = useAuthStore()
-  const navigate = useNavigate()
   const { addItem } = useCart()
 
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null)
@@ -49,10 +46,20 @@ export function ProductDetail() {
   }, [product])
 
   function handleAddToCart() {
-    if (!token) { navigate('/login'); return }
     if (!product) return
+    const mainImage = product.images.find((i) => i.isMain)?.imageUrl ?? product.images[0]?.imageUrl ?? null
     addItem.mutate(
-      { productId: product.id, variantId: selectedVariantId ?? undefined, quantity: qty },
+      {
+        productId: product.id,
+        variantId: selectedVariantId ?? null,
+        quantity: qty,
+        productName: product.name,
+        productSku: product.sku,
+        productMainImage: mainImage,
+        variantSku: selectedVariant?.sku ?? null,
+        variantAttributes: selectedVariant?.attributes ?? null,
+        unitPrice: effectivePrice,
+      },
       {
         onSuccess: () => {
           setAddedOk(true)

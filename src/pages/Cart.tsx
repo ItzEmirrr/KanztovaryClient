@@ -50,7 +50,7 @@ export function Cart() {
         {/* Items */}
         <div className="md:col-span-2 space-y-4">
           {cart.items.map((item) => (
-            <div key={item.id} className="bg-white border border-divider rounded-xl p-4 flex gap-4">
+            <div key={`${item.productId}_${item.variantId}`} className="bg-white border border-divider rounded-xl p-4 flex gap-4">
               <img
                 src={getImageUrl(item.productMainImage)}
                 alt={item.productName}
@@ -73,14 +73,27 @@ export function Cart() {
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center border border-divider rounded-full overflow-hidden">
                     <button
-                      onClick={() => item.quantity > 1 && updateItem.mutate({ itemId: item.id, quantity: item.quantity - 1 })}
+                      onClick={() =>
+                        item.quantity > 1 &&
+                        updateItem.mutate({
+                          productId: item.productId,
+                          variantId: item.variantId,
+                          quantity: item.quantity - 1,
+                        })
+                      }
                       className="w-8 h-8 flex items-center justify-center hover:bg-stone-100"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="w-8 text-center text-sm">{item.quantity}</span>
                     <button
-                      onClick={() => updateItem.mutate({ itemId: item.id, quantity: item.quantity + 1 })}
+                      onClick={() =>
+                        updateItem.mutate({
+                          productId: item.productId,
+                          variantId: item.variantId,
+                          quantity: item.quantity + 1,
+                        })
+                      }
                       className="w-8 h-8 flex items-center justify-center hover:bg-stone-100"
                     >
                       <Plus className="w-3 h-3" />
@@ -89,7 +102,7 @@ export function Cart() {
                   <div className="flex items-center gap-4">
                     <span className="font-semibold text-[#1c1917] text-sm">{formatPrice(item.subtotal)}</span>
                     <button
-                      onClick={() => removeItem.mutate(item.id)}
+                      onClick={() => removeItem.mutate({ productId: item.productId, variantId: item.variantId })}
                       className="text-stone-400 hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />

@@ -1,22 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Store, Truck, Tag } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMutation } from '@tanstack/react-query'
 import { cartApi } from '../api/cart'
+import { guestOrdersApi } from '../api/guestOrders'
 import { useCart } from '../hooks/useCart'
+import { useGuestCartStore } from '../store/guestCartStore'
 import { getImageUrl, formatPrice } from '../lib/utils'
 import toast from 'react-hot-toast'
+import { useState } from 'react'
 
 interface FormData {
+  customerName: string
   phoneNumber: string
   deliveryType: 'PICKUP' | 'DELIVERY'
   deliveryAddress?: string
 }
 
 export function Checkout() {
-  const { cart } = useCart()
+  const { cart, isGuest } = useCart()
+  const guestStore = useGuestCartStore()
   const navigate = useNavigate()
   const [promoCode, setPromoCode] = useState('')
 
@@ -26,13 +31,12 @@ export function Checkout() {
 
   const deliveryType = watch('deliveryType')
   const isFreeDelivery = (cart?.totalPrice ?? 0) >= 10000
-  const deliveryFeeNum: number = 0 // рассчитывается при подтверждении
   const deliveryFeeLabel =
     deliveryType === 'PICKUP' ? '—'
     : isFreeDelivery ? 'Бесплатно'
     : 'По согласованию'
 
-  const checkout = useMutation({
+  const authCheckout = useMutation({
     mutationFn: cartApi.checkout,
     onSuccess: (order: { id: number }) => {
       navigate(`/checkout/success?orderId=${order.id}`)
@@ -40,16 +44,42 @@ export function Checkout() {
     onError: () => toast.error('Не удалось оформить заказ'),
   })
 
+  const guestCheckout = useMutation({
+    mutationFn: guestOrdersApi.checkout,
+    onSuccess: (order: { id: number }) => {
+      guestStore.clear()
+      navigate(`/checkout/success?orderId=${order.id}`)
+    },
+    onError: () => toast.error('Не удалось оформить заказ'),
+  })
+
+  const isPending = authCheckout.isPending || guestCheckout.isPending
+
   useEffect(() => {
     document.title = 'Оформление заказа — Stationery'
   }, [])
 
+  if (!cart || cart.items.length === 0) {
+    navigate('/cart')
+    return null
+  }
+
   function onSubmit(data: FormData) {
-    checkout.mutate({
-      deliveryType: data.deliveryType,
-      deliveryAddress: data.deliveryType === 'DELIVERY' ? data.deliveryAddress : undefined,
-      phoneNumber: data.phoneNumber,
-    })
+    if (isGuest) {
+      guestCheckout.mutate({
+        customerName: data.customerName,
+        phoneNumber: data.phoneNumber,
+        deliveryType: data.deliveryType,
+        deliveryAddress: data.deliveryType === 'DELIVERY' ? data.deliveryAddress : undefined,
+        items: guestStore.items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+      })
+    } else {
+      authCheckout.mutate({
+        deliveryType: data.deliveryType,
+        deliveryAddress: data.deliveryType === 'DELIVERY' ? data.deliveryAddress : undefined,
+        phoneNumber: data.phoneNumber,
+      })
+    }
   }
 
   return (
@@ -59,27 +89,42 @@ export function Checkout() {
       <div className="grid md:grid-cols-3 gap-8">
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-2 space-y-8">
-          {/* Step 1 */}
+          {/* Contact */}
           <section className="bg-white border border-divider rounded-xl p-6">
             <h2 className="font-serif text-lg font-semibold text-[#1c1917] mb-4">Контактные данные</h2>
-            <div>
-              <label className="block text-sm font-medium text-[#1c1917] mb-1">Номер телефона *</label>
-              <input
-                {...register('phoneNumber', {
-                  required: 'Введите номер телефона',
-                  pattern: { value: /^\+?[0-9\s\-()]{10,}$/, message: 'Неверный формат номера' },
-                })}
-                placeholder="+996 700 000 000"
-                className="w-full px-4 py-2.5 border border-divider rounded-lg text-sm focus:outline-none focus:border-[#1e3a5f]"
-              />
-              {errors.phoneNumber && (
-                <p className="text-red-500 text-xs mt-1">{errors.phoneNumber.message}</p>
+            <div className="space-y-4">
+              {isGuest && (
+                <div>
+                  <label className="block text-sm font-medium text-[#1c1917] mb-1">Ваше имя *</label>
+                  <input
+                    {...register('customerName', { required: isGuest ? 'Введите ваше имя' : false })}
+                    placeholder="Иван Иванов"
+                    className="w-full px-4 py-2.5 border border-divider rounded-lg text-sm focus:outline-none focus:border-[#1e3a5f]"
+                  />
+                  {errors.customerName && (
+                    <p className="text-red-500 text-xs mt-1">{errors.customerName.message}</p>
+                  )}
+                </div>
               )}
-              <p className="text-xs text-[#78716c] mt-1">Администратор свяжется с вами для подтверждения</p>
+              <div>
+                <label className="block text-sm font-medium text-[#1c1917] mb-1">Номер телефона *</label>
+                <input
+                  {...register('phoneNumber', {
+                    required: 'Введите номер телефона',
+                    pattern: { value: /^\+?[0-9\s\-()]{10,}$/, message: 'Неверный формат номера' },
+                  })}
+                  placeholder="+996 700 000 000"
+                  className="w-full px-4 py-2.5 border border-divider rounded-lg text-sm focus:outline-none focus:border-[#1e3a5f]"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-xs mt-1">{errors.phoneNumber.message}</p>
+                )}
+                <p className="text-xs text-[#78716c] mt-1">Администратор свяжется с вами для подтверждения</p>
+              </div>
             </div>
           </section>
 
-          {/* Step 2 */}
+          {/* Delivery */}
           <section className="bg-white border border-divider rounded-xl p-6">
             <h2 className="font-serif text-lg font-semibold text-[#1c1917] mb-4">Способ получения</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
@@ -133,10 +178,10 @@ export function Checkout() {
 
           <button
             type="submit"
-            disabled={checkout.isPending}
+            disabled={isPending}
             className="w-full bg-[#1e3a5f] hover:bg-[#2d5282] disabled:bg-stone-300 text-white py-4 rounded-full font-medium text-base transition-all"
           >
-            {checkout.isPending ? 'Оформляем...' : 'Подтвердить заказ'}
+            {isPending ? 'Оформляем...' : 'Подтвердить заказ'}
           </button>
         </form>
 
@@ -144,8 +189,8 @@ export function Checkout() {
         <div className="sticky top-24 h-fit bg-white border border-divider rounded-xl p-6">
           <h2 className="font-serif text-xl font-semibold text-[#1c1917] mb-4">Ваш заказ</h2>
           <div className="space-y-3 mb-4">
-            {cart?.items.map((item) => (
-              <div key={item.id} className="flex items-center gap-3">
+            {cart.items.map((item) => (
+              <div key={`${item.productId}_${item.variantId}`} className="flex items-center gap-3">
                 <img
                   src={getImageUrl(item.productMainImage)}
                   alt={item.productName}
@@ -162,7 +207,7 @@ export function Checkout() {
           <div className="border-t border-divider pt-3 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-[#78716c]">Товары</span>
-              <span>{formatPrice(cart?.totalPrice ?? 0)}</span>
+              <span>{formatPrice(cart.totalPrice)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#78716c]">Доставка</span>
@@ -172,7 +217,7 @@ export function Checkout() {
             </div>
             <div className="border-t border-divider pt-2 flex justify-between font-bold text-base">
               <span>Итого</span>
-              <span className="text-[#1e3a5f]">{formatPrice((cart?.totalPrice ?? 0) + deliveryFeeNum)}</span>
+              <span className="text-[#1e3a5f]">{formatPrice(cart.totalPrice)}</span>
             </div>
           </div>
 

@@ -65,10 +65,11 @@ export default function App() {
           <Route path="/faq" element={<PageTransition><Faq /></PageTransition>} />
           <Route path="/contacts" element={<PageTransition><Contacts /></PageTransition>} />
 
+          {/* Public cart & checkout (guests allowed) */}
+          <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
+          <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
+          <Route path="/checkout/success" element={<PageTransition><CheckoutSuccess /></PageTransition>} />
           {/* Protected */}
-          <Route path="/cart" element={<ProtectedRoute><PageTransition><Cart /></PageTransition></ProtectedRoute>} />
-          <Route path="/checkout" element={<ProtectedRoute><PageTransition><Checkout /></PageTransition></ProtectedRoute>} />
-          <Route path="/checkout/success" element={<ProtectedRoute><PageTransition><CheckoutSuccess /></PageTransition></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><PageTransition><Orders /></PageTransition></ProtectedRoute>} />
           <Route path="/orders/:id" element={<ProtectedRoute><PageTransition><OrderDetail /></PageTransition></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><PageTransition><ProfilePage /></PageTransition></ProtectedRoute>} />
