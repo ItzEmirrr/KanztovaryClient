@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useInView } from 'framer-motion'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeft, ChevronRight, Pen, Book, Palette, Scissors, Folder, Box, Star, Grid } from 'lucide-react'
 import { useCategories } from '../../hooks/useProducts'
@@ -47,8 +48,26 @@ export function CategoryRow() {
     }
   }, [emblaApi, updateScrollState])
 
+  // Один раз, когда ряд реально попал в область видимости, слегка прокручиваем
+  // его и возвращаем назад — жестом показываем, что категории свайпаются
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.5 })
+  const hasNudged = useRef(false)
+
+  useEffect(() => {
+    if (!emblaApi || !isInView || hasNudged.current || isLoading || rootCategories.length === 0) return
+    if (!emblaApi.canScrollNext()) return
+    hasNudged.current = true
+    const nudgeOut = setTimeout(() => emblaApi.scrollNext(), 400)
+    const nudgeBack = setTimeout(() => emblaApi.scrollPrev(), 950)
+    return () => {
+      clearTimeout(nudgeOut)
+      clearTimeout(nudgeBack)
+    }
+  }, [emblaApi, isInView, isLoading, rootCategories.length])
+
   return (
-    <section className="container mx-auto px-4 py-16">
+    <section ref={sectionRef} className="container mx-auto px-4 py-16">
       <div className="flex items-center justify-between mb-8">
         <h2 className="font-serif text-3xl font-semibold text-[#1c1917]">
           Выбери свой раздел
@@ -89,7 +108,7 @@ export function CategoryRow() {
             {isLoading
               ? Array(6).fill(0).map((_, i) => (
                   <div key={i} className="shrink-0">
-                    <Skeleton className="w-40 h-40 rounded-2xl" />
+                    <Skeleton className="w-[38vw] max-w-40 aspect-square sm:w-40 sm:h-40 rounded-2xl" />
                   </div>
                 ))
               : rootCategories.map((cat) => {
@@ -98,7 +117,7 @@ export function CategoryRow() {
                     <Link
                       key={cat.id}
                       to={`/catalog?categoryId=${cat.id}`}
-                      className="group shrink-0 w-40 h-40 rounded-2xl bg-[#f5f0e8] flex flex-col items-center justify-center gap-3 hover:bg-[#1e3a5f] transition-colors duration-200"
+                      className="group shrink-0 w-[38vw] max-w-40 aspect-square sm:w-40 sm:h-40 rounded-2xl bg-[#f5f0e8] flex flex-col items-center justify-center gap-3 hover:bg-[#1e3a5f] transition-colors duration-200"
                     >
                       <Icon className="w-8 h-8 text-[#1e3a5f] group-hover:text-white transition-colors" />
                       <span className="text-sm font-medium text-[#1c1917] group-hover:text-white transition-colors text-center px-2">
