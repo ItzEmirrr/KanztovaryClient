@@ -79,7 +79,7 @@ export function SmartPicker() {
   })
 
   useEffect(() => {
-    document.title = 'Умный подбор — Stationery'
+    document.title = 'Умный подбор — Канцтовары'
     textareaRef.current?.focus()
   }, [])
 

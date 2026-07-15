@@ -63,7 +63,7 @@ export function Catalog() {
   })
 
   useEffect(() => {
-    document.title = 'Каталог — Stationery'
+    document.title = 'Каталог — Канцтовары'
   }, [])
 
   useEffect(() => {

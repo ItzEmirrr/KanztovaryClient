@@ -69,7 +69,7 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link to="/" className="font-serif text-2xl font-semibold text-[#1e3a5f] shrink-0">
-          Stationery
+          Канцтовары
         </Link>
 
         {/* Search */}
@@ -217,7 +217,7 @@ export function Header() {
               className="fixed left-0 top-0 h-full w-72 bg-white z-50 shadow-xl flex flex-col"
             >
               <div className="p-5 border-b border-divider flex items-center justify-between">
-                <span className="font-serif text-xl text-[#1e3a5f]">Stationery</span>
+                <span className="font-serif text-xl text-[#1e3a5f]">Канцтовары</span>
                 <button onClick={() => setMobileOpen(false)}>
                   <X className="w-5 h-5" />
                 </button>

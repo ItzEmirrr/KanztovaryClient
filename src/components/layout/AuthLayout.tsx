@@ -5,7 +5,7 @@ export function AuthLayout() {
     <div className="min-h-screen flex">
       {/* Left panel */}
       <div className="hidden md:flex w-2/5 bg-[#1e3a5f] flex-col items-center justify-center p-12 text-white">
-        <div className="font-serif text-3xl font-semibold mb-8">Stationery</div>
+        <div className="font-serif text-3xl font-semibold mb-8">Канцтовары</div>
         <blockquote className="font-serif italic text-lg text-white/80 text-center leading-relaxed max-w-xs">
           «Правильный инструмент превращает мысль в произведение. Перо, бумага, намерение — вот что создаёт шедевры.»
         </blockquote>

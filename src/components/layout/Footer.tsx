@@ -12,7 +12,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Col 1: Brand */}
           <div>
-            <div className="font-serif text-2xl font-semibold mb-3">Stationery</div>
+            <div className="font-serif text-2xl font-semibold mb-3">Канцтовары</div>
             <p className="text-sm text-white/60 leading-relaxed mb-5">
               Канцелярия, которая вдохновляет. Тщательно отобранные инструменты для тех, кто ценит качество письма.
             </p>
@@ -122,7 +122,7 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="text-sm text-white/40">© 2025 Stationery. Все права защищены.</p>
+          <p className="text-sm text-white/40">© 2026 Канцтовары. Все права защищены.</p>
           <p className="text-xs text-white/30">Бишкек, Кыргызстан</p>
         </div>
       </div>

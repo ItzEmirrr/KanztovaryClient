@@ -12,7 +12,7 @@ export function OrderDetail() {
   const { data: order, isLoading } = useOrder(Number(id))
 
   useEffect(() => {
-    if (order) document.title = `Заказ #${order.id} — Stationery`
+    if (order) document.title = `Заказ #${order.id} — Канцтовары`
   }, [order])
 
   if (isLoading) {

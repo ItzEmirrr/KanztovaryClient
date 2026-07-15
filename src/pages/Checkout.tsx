@@ -56,7 +56,7 @@ export function Checkout() {
   const isPending = authCheckout.isPending || guestCheckout.isPending
 
   useEffect(() => {
-    document.title = 'Оформление заказа — Stationery'
+    document.title = 'Оформление заказа — Канцтовары'
   }, [])
 
   if (!cart || cart.items.length === 0) {

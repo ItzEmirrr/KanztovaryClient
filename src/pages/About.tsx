@@ -20,7 +20,7 @@ function StatCard({ value, label }: { value: string; label: string }) {
 }
 
 export function About() {
-  useEffect(() => { document.title = 'О компании — Stationery' }, [])
+  useEffect(() => { document.title = 'О компании — Канцтовары' }, [])
 
   return (
     <div>

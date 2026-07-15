@@ -22,7 +22,7 @@ export function Orders() {
   const { data, isLoading } = useOrders({ status: status || undefined, page, size: 10 })
 
   useEffect(() => {
-    document.title = 'Мои заказы — Stationery'
+    document.title = 'Мои заказы — Канцтовары'
   }, [])
 
   function updateParam(key: string, value: string | null) {

@@ -11,7 +11,7 @@ interface FormData {
 }
 
 export function Contacts() {
-  useEffect(() => { document.title = 'Контакты — Stationery' }, [])
+  useEffect(() => { document.title = 'Контакты — Канцтовары' }, [])
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>()
 

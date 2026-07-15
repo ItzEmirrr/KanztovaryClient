@@ -17,7 +17,7 @@ export function Reviews() {
   const { token } = useAuthStore()
 
   useEffect(() => {
-    document.title = 'Отзывы — Stationery'
+    document.title = 'Отзывы — Канцтовары'
   }, [])
 
   // ── Stats ────────────────────────────────────────────────────────────────────

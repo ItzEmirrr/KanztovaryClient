@@ -39,7 +39,7 @@ function NewArrivals() {
 
 export function Home() {
   useEffect(() => {
-    document.title = 'Stationery — Канцелярия, которая вдохновляет'
+    document.title = 'Канцтовары — Канцелярия, которая вдохновляет'
   }, [])
 
   return (

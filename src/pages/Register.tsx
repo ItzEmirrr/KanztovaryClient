@@ -31,7 +31,7 @@ export function Register() {
   })
 
   useEffect(() => {
-    document.title = 'Регистрация — Stationery'
+    document.title = 'Регистрация — Канцтовары'
   }, [])
 
   return (

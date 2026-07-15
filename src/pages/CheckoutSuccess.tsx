@@ -9,7 +9,7 @@ export function CheckoutSuccess() {
   const { token } = useAuthStore()
 
   useEffect(() => {
-    document.title = 'Заказ оформлен — Stationery'
+    document.title = 'Заказ оформлен — Канцтовары'
   }, [])
 
   return (

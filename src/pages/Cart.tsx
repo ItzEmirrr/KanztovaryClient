@@ -10,7 +10,7 @@ export function Cart() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    document.title = 'Корзина — Stationery'
+    document.title = 'Корзина — Канцтовары'
   }, [])
 
   if (isLoading) {

@@ -80,7 +80,7 @@ export function ProfilePage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    document.title = 'Мой профиль — Stationery'
+    document.title = 'Мой профиль — Канцтовары'
   }, [])
 
   function handleLogout() {

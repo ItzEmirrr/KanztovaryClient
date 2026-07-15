@@ -40,7 +40,7 @@ export function ProductDetail() {
 
   useEffect(() => {
     if (product) {
-      document.title = `${product.name} — Stationery`
+      document.title = `${product.name} — Канцтовары`
       if (product.variants.length > 0) setSelectedVariantId(product.variants[0].id)
     }
   }, [product])

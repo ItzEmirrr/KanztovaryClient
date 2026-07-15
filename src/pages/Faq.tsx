@@ -41,7 +41,7 @@ const FAQ_ITEMS = [
 
 export function Faq() {
   const [search, setSearch] = useState('')
-  useEffect(() => { document.title = 'FAQ — Stationery' }, [])
+  useEffect(() => { document.title = 'FAQ — Канцтовары' }, [])
 
   const filtered = FAQ_ITEMS.filter(
     (item) =>

@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react'
 import { cn } from '../lib/utils'
 
 export function Delivery() {
-  useEffect(() => { document.title = 'Доставка и оплата — Stationery' }, [])
+  useEffect(() => { document.title = 'Доставка и оплата — Канцтовары' }, [])
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-3xl">

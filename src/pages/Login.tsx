@@ -28,7 +28,7 @@ export function Login() {
   })
 
   useEffect(() => {
-    document.title = 'Вход — Stationery'
+    document.title = 'Вход — Канцтовары'
   }, [])
 
   return (
